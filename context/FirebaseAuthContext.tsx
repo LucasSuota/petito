@@ -29,7 +29,6 @@ const FirebaseAuthContext = ({ children }: { children: ReactNode }) => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         const docRef = collection(db, "users");
-        addDoc(docRef, { teste: "Lucas" });
         const docSnap = await getDocs(docRef);
 
         docSnap.forEach((doc) => console.log(doc.id, "=>", doc.data()));

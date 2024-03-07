@@ -5,5 +5,5 @@ export type TextInputProps = {
   register: any;
   registerName: string;
   error: boolean;
-  helperText: string;
+  helperText: string | undefined;
 };

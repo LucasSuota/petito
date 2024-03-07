@@ -15,6 +15,10 @@ const config: Config = {
         primarycream: "#f2f2ff",
         primaryblack: "#22222f",
       },
+      backgroundImage: {
+        "login-background": 'url("/images/login-background.jpg")',
+        "register-background": 'url("/images/register-background.jpg")',
+      },
     },
   },
   plugins: [],
