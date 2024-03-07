@@ -14,9 +14,5 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body className={lexend.className}>{children}</body>
-    </html>
-  );
+  return <section className={lexend.className}>{children}</section>;
 }
