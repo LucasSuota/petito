@@ -4,7 +4,14 @@ import { auth, db } from "@/firebase/firebase";
 import { firebaseReducer, initialValue } from "@/reducer/firebaseReducer";
 import { UserType } from "@/types/UserType";
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, getDoc, getDocs } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+} from "firebase/firestore";
 import { ReactNode, createContext, useEffect, useReducer } from "react";
 
 export const UserContext = createContext<{
@@ -20,8 +27,9 @@ const FirebaseAuthContext = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (!user) {
+      if (user) {
         const docRef = collection(db, "users");
+        addDoc(docRef, { teste: "Lucas" });
         const docSnap = await getDocs(docRef);
 
         docSnap.forEach((doc) => console.log(doc.id, "=>", doc.data()));
