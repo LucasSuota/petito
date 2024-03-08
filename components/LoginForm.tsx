@@ -2,16 +2,27 @@
 
 import PasswordInput from "@/components/layout/inputs/PasswordInput";
 import TextInput from "@/components/layout/inputs/TextInput";
+import { UserContext } from "@/context/FirebaseAuthContext";
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
 
 const LoginForm = () => {
+  const context = useContext(UserContext);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>();
   const onSubmit = handleSubmit((data) => {
-    console.log(data.email);
+    alert("here it clicks");
+    context.dispatch({
+      type: "LOGIN",
+      payload: {
+        email: data.email,
+        password: data.password,
+      },
+    });
   });
 
   return (
