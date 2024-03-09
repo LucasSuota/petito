@@ -1,7 +1,5 @@
-import { auth } from "@/firebase/firebase";
 import { DispatchType } from "@/types/DispatchType";
 import { UserType } from "@/types/UserType";
-import { createUserWithEmailAndPassword } from "firebase/auth";
 
 export const initialValue = {
   user: null,
@@ -11,10 +9,6 @@ export const initialValue = {
 
 export const firebaseReducer = (state: UserType, action: DispatchType) => {
   switch (action.type) {
-    case "REGISTER_USER": {
-      return { ...state };
-    }
-
     case "REGISTER_SUCCESS": {
       state.isRegistering = false;
       state.isRegistered = true;
