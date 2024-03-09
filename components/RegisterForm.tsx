@@ -5,11 +5,13 @@ import TextInput from "@/components/layout/inputs/TextInput";
 import { UserContext } from "@/context/FirebaseAuthContext";
 import { auth } from "@/firebase/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { useContext } from "react";
+import { useRouter } from "next/navigation";
+import { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 const RegisterForm = () => {
   const context = useContext(UserContext);
+  const router = useRouter();
 
   const {
     register,
@@ -24,6 +26,7 @@ const RegisterForm = () => {
           context.dispatch({
             type: "REGISTER_SUCCESS",
           });
+          router.push("/login");
           resolve();
         })
         .catch((error) => {
@@ -41,7 +44,7 @@ const RegisterForm = () => {
       <form className="sm:w-[80%] flex flex-col gap-2" onSubmit={onSubmit}>
         <TextInput
           name="firstName"
-          label="First Name"
+          label="Nome"
           register={register}
           registerName="firstName"
           error={!!errors.firstName}
@@ -49,7 +52,7 @@ const RegisterForm = () => {
         />
         <TextInput
           name="lastName"
-          label="Last Name"
+          label="Sobrenome"
           registerName="lastName"
           register={register}
           error={!!errors.lastName}
@@ -66,7 +69,7 @@ const RegisterForm = () => {
         />
         <PasswordInput
           name="password"
-          label="Password"
+          label="Senha"
           register={register}
           registerName="password"
           error={!!errors.password}
@@ -74,6 +77,16 @@ const RegisterForm = () => {
             errors.password ? "Senha é necessária e deve conter 8 digitos" : ""
           }
         />
+        <p
+          className={`${
+            context.state.isRegistered ? "text-green-800" : "text-red-800"
+          } text-sm mt-2 mb-2
+            `}
+        >
+          {context.state.isRegistered
+            ? "Sucesso ao registrar"
+            : "Erro ao registrar"}
+        </p>
         {context.state.isRegistering ? (
           <button
             type="submit"

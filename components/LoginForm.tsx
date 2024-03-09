@@ -26,7 +26,7 @@ const LoginForm = () => {
   });
 
   return (
-    <form className="sm:w-[70%] flex flex-col gap-2" onSubmit={onSubmit}>
+    <form className="sm:w-[80%] flex flex-col gap-2" onSubmit={onSubmit}>
       <TextInput
         name="email"
         label="Email"

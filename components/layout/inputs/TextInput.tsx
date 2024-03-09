@@ -14,6 +14,7 @@ const TextInput = ({
     <TextField
       {...register(`${registerName}`, { required: true })}
       name={name}
+      color=""
       label={label}
       type={type}
       error={error}
