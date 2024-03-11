@@ -20,20 +20,23 @@ const PopUpMessage = () => {
       duration: 0.3,
       delay: 2,
     });
-    if (context.state.isRegistering == true) {
+    if (
+      context.state.isRegistering == true ||
+      context.state.isLogging == true
+    ) {
       tl.restart();
     }
-  }, [context.state.isRegistering]);
+  }, [context.state.isRegistering, context.state.isLogging]);
 
   return (
     <>
-      {context.state.isRegistered ? (
-        <div className="popup absolute left-2/4 translate-x-[-50%] w-[90%] sm:w-2/4 mt-4 bg-green-500 p-4 text-center rounded-sm shadow-xl">
-          <p className="text-white">Sucesso ao criar conta</p>
+      {!context.state.isRegistered ? (
+        <div className="popup absolute left-2/4 translate-x-[-50%] w-[90%] sm:w-2/4 mt-4 bg-red-500 p-4 text-center rounded-sm shadow-xl">
+          <p className="text-white">Erro</p>
         </div>
       ) : (
-        <div className="popup absolute left-2/4 translate-x-[-50%] w-[90%] sm:w-2/4 mt-4 bg-red-500 p-4 text-center rounded-sm shadow-xl">
-          <p className="text-white">Erro ao criar conta</p>
+        <div className="popup absolute left-2/4 translate-x-[-50%] w-[90%] sm:w-2/4 mt-4 bg-green-500 p-4 text-center rounded-sm shadow-xl">
+          <p className="text-white">Sucesso</p>
         </div>
       )}
     </>

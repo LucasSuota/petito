@@ -5,7 +5,7 @@ import "./globals.css";
 const lexend = Lexend({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Petito!",
+  title: "Petito! Registrar",
   description: "Cuide dos cuidados do seu bichinho!",
 };
 

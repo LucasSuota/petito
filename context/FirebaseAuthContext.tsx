@@ -10,7 +10,13 @@ export const UserContext = createContext<{
   state: UserType;
   dispatch: React.Dispatch<any>;
 }>({
-  state: { user: null, isRegistering: false, isRegistered: false },
+  state: {
+    user: null,
+    isRegistering: false,
+    isRegistered: false,
+    isLogged: false,
+    isLogging: false,
+  },
   dispatch: () => null,
 });
 

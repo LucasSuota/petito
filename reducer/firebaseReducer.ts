@@ -5,6 +5,8 @@ export const initialValue = {
   user: null,
   isRegistering: false,
   isRegistered: false,
+  isLogging: false,
+  isLogged: false,
 };
 
 export const firebaseReducer = (state: UserType, action: DispatchType) => {
@@ -29,21 +31,19 @@ export const firebaseReducer = (state: UserType, action: DispatchType) => {
       };
     }
 
+    case "LOGIN_REQUEST": {
+      return {
+        ...state,
+        state: (state.isLogging = true),
+      };
+    }
     case "LOGIN": {
-      console.log("login clicked");
+      return {
+        ...state,
+        state: ((state.isLogging = false), (state.isLogged = true)),
+      };
+    }
 
-      return {
-        ...state,
-        user: null,
-      };
-    }
-    case "LOGOUT": {
-      console.log("logout clicked");
-      return {
-        ...state,
-        user: null,
-      };
-    }
     default:
       return state;
   }

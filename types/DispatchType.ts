@@ -1,5 +1,6 @@
 export type DispatchType = {
   type:
+    | "LOGIN_REQUEST"
     | "LOGIN"
     | "LOGOUT"
     | "REGISTER_SUCCESS"

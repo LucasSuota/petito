@@ -3,11 +3,16 @@
 import PasswordInput from "@/components/layout/inputs/PasswordInput";
 import TextInput from "@/components/layout/inputs/TextInput";
 import { UserContext } from "@/context/FirebaseAuthContext";
+import { auth } from "@/firebase/firebase";
+import { error } from "console";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { useRouter } from "next/navigation";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
 
 const LoginForm = () => {
   const context = useContext(UserContext);
+  const router = useRouter();
 
   const {
     register,
@@ -15,13 +20,17 @@ const LoginForm = () => {
     formState: { errors },
   } = useForm<FormData>();
   const onSubmit = handleSubmit((data) => {
-    alert("here it clicks");
-    context.dispatch({
-      type: "LOGIN",
-      payload: {
-        email: data.email,
-        password: data.password,
-      },
+    new Promise<void>(() => {
+      context.dispatch({
+        type: "LOGIN_REQUEST",
+      });
+      signInWithEmailAndPassword(auth, data.email, data.password)
+        .then(() => {
+          context.dispatch({
+            type: "LOGIN",
+          });
+        })
+        .then(() => router.push("/application"));
     });
   });
 
