@@ -1,6 +1,6 @@
 "use client";
 
-import { auth, db } from "@/firebase/firebase";
+import { auth } from "@/firebase/firebase";
 import { firebaseReducer, initialValue } from "@/reducer/firebaseReducer";
 import { UserType } from "@/types/UserType";
 import { onAuthStateChanged } from "firebase/auth";

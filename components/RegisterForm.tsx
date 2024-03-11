@@ -6,7 +6,7 @@ import { UserContext } from "@/context/FirebaseAuthContext";
 import { auth } from "@/firebase/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
 
 const RegisterForm = () => {
@@ -19,22 +19,22 @@ const RegisterForm = () => {
     formState: { errors },
   } = useForm<FormData>();
   const onSubmit = handleSubmit((data) => {
-    new Promise<void>((resolve, reject) => {
-      context.state.isRegistering = true;
+    new Promise<void>(() => {
+      context.dispatch({ type: "REGISTER_REQUEST" });
       createUserWithEmailAndPassword(auth, data.email, data.password)
         .then(() => {
           context.dispatch({
             type: "REGISTER_SUCCESS",
           });
+        })
+        .then(() => {
           router.push("/login");
-          resolve();
         })
         .catch((error) => {
           context.dispatch({
             type: "REGISTER_FAIL",
             payload: { error },
           });
-          reject(error);
         });
     });
   });
@@ -77,16 +77,6 @@ const RegisterForm = () => {
             errors.password ? "Senha é necessária e deve conter 8 digitos" : ""
           }
         />
-        <p
-          className={`${
-            context.state.isRegistered ? "text-green-800" : "text-red-800"
-          } text-sm mt-2 mb-2
-            `}
-        >
-          {context.state.isRegistered
-            ? "Sucesso ao registrar"
-            : "Erro ao registrar"}
-        </p>
         {context.state.isRegistering ? (
           <button
             type="submit"
