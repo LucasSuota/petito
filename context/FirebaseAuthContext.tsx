@@ -12,10 +12,9 @@ export const UserContext = createContext<{
 }>({
   state: {
     user: null,
-    isRegistering: false,
+    isInitiallyLoading: true,
+    isLoading: false,
     isRegistered: false,
-    isLogged: false,
-    isLogging: false,
   },
   dispatch: () => null,
 });

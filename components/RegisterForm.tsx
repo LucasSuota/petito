@@ -8,6 +8,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
+import { restartTimeline } from "./layout/popUp/PopUpMessage";
 
 const RegisterForm = () => {
   const context = useContext(UserContext);
@@ -20,7 +21,7 @@ const RegisterForm = () => {
   } = useForm<FormData>();
   const onSubmit = handleSubmit((data) => {
     new Promise<void>(() => {
-      context.dispatch({ type: "REGISTER_REQUEST" });
+      context.dispatch({ type: "USER_REQUEST" });
       createUserWithEmailAndPassword(auth, data.email, data.password)
         .then(() => {
           context.dispatch({
@@ -35,6 +36,7 @@ const RegisterForm = () => {
             type: "REGISTER_FAIL",
             payload: { error },
           });
+          restartTimeline();
         });
     });
   });
@@ -77,7 +79,7 @@ const RegisterForm = () => {
             errors.password ? "Senha é necessária e deve conter 8 digitos" : ""
           }
         />
-        {context.state.isRegistering ? (
+        {context.state.isLoading ? (
           <button
             type="submit"
             disabled={true}

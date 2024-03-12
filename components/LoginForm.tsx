@@ -7,11 +7,12 @@ import { auth } from "@/firebase/firebase";
 import { error } from "console";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 
 const LoginForm = () => {
   const context = useContext(UserContext);
+  const [loginError, setLoginError] = useState<boolean>(false);
   const router = useRouter();
 
   const {
@@ -22,7 +23,7 @@ const LoginForm = () => {
   const onSubmit = handleSubmit((data) => {
     new Promise<void>(() => {
       context.dispatch({
-        type: "LOGIN_REQUEST",
+        type: "USER_REQUEST",
       });
       signInWithEmailAndPassword(auth, data.email, data.password)
         .then(() => {
@@ -30,7 +31,16 @@ const LoginForm = () => {
             type: "LOGIN",
           });
         })
-        .then(() => router.push("/application"));
+        .then(() => {
+          setLoginError(false);
+        })
+        .then(() => {
+          alert("Usuario Logado");
+        })
+        .catch((error) => {
+          console.error(error);
+          setLoginError(true);
+        });
     });
   });
 
@@ -53,12 +63,26 @@ const LoginForm = () => {
         error={!!errors.password}
         helperText={errors.password ? "Senha é necessária" : ""}
       />
-      <button
-        className="bg-primaryblue hover:bg-primarypurple active:bg-primaryblack text-white rounded-sm px-2 py-4 transition-all"
-        type="submit"
-      >
-        Entrar
-      </button>
+      {loginError && (
+        <p className="text-red-500 text-sm">Email ou senha incorreto</p>
+      )}
+      {context.state.isLoading ? (
+        <button
+          type="submit"
+          disabled={true}
+          className="bg-primaryblue hover:bg-primarypurple active:bg-primaryblack disabled:bg-blue-200 text-white rounded-sm px-2 py-4 transition-all"
+        >
+          Entrando...
+        </button>
+      ) : (
+        <button
+          type="submit"
+          disabled={false}
+          className="bg-primaryblue hover:bg-primarypurple active:bg-primaryblack disabled:bg-blue-200 text-white rounded-sm px-2 py-4 transition-all"
+        >
+          Entrar
+        </button>
+      )}
     </form>
   );
 };

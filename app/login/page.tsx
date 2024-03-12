@@ -5,7 +5,6 @@ import PagesTransition from "@/transition/PagesTransition";
 const Home = () => {
   return (
     <PagesTransition>
-      <PopUpMessage />
       <main className="sm:max-w-[60%] max-w-[90%] h-dvh mx-auto flex sm:flex-row flex-col items-center justify-center ">
         <div className="sm:hidden flex w-[90%] sm:h-[700px] h-[200px] bg-register-background bg-cover bg-top bg-no-repeat rounded-t-xl sm:shadow-xl" />
         <div className="sm:flex hidden w-[50%] sm:h-[600px] max-h-[70%] h-[400px] bg-register-background bg-cover bg-top bg-no-repeat rounded-l-xl sm:shadow-xl" />
