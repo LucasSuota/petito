@@ -29,6 +29,7 @@ export const firebaseReducer = (state: UserType, action: DispatchType) => {
         state: ((state.isLoading = false), (state.isRegistered = false)),
       };
     }
+
     default:
       return state;
   }

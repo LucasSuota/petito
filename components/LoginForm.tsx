@@ -35,7 +35,7 @@ const LoginForm = () => {
           setLoginError(false);
         })
         .then(() => {
-          alert("Usuario Logado");
+          router.push("/application");
         })
         .catch((error) => {
           console.error(error);
