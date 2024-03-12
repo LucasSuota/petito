@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <FirebaseAuthContext>
-      <section className={lexend.className}>{children}</section>;
+      <section className={lexend.className}>{children}</section>
     </FirebaseAuthContext>
   );
 }

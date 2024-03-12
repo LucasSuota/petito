@@ -4,7 +4,7 @@ import PasswordInput from "@/components/layout/inputs/PasswordInput";
 import TextInput from "@/components/layout/inputs/TextInput";
 import { UserContext } from "@/context/FirebaseAuthContext";
 import { auth } from "@/firebase/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
@@ -27,6 +27,13 @@ const RegisterForm = () => {
           context.dispatch({
             type: "REGISTER_SUCCESS",
           });
+        })
+        .then(() => {
+          if (auth.currentUser) {
+            updateProfile(auth.currentUser, {
+              displayName: `${data.firstName} ${data.lastName}`,
+            });
+          }
         })
         .then(() => {
           router.push("/login");
