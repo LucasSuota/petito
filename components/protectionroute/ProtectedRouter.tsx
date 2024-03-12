@@ -1,6 +1,7 @@
 "use client";
 
 import { UserContext } from "@/context/FirebaseAuthContext";
+import { auth } from "@/firebase/firebase";
 import { useRouter } from "next/navigation";
 import React, { ReactNode, useEffect } from "react";
 import { useContext } from "react";
@@ -11,7 +12,7 @@ const ProtectedRouter = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (context.state.user === null) router.push("/login");
+      if (auth.currentUser == null) router.push("/login");
       clearInterval(interval);
     }, 2000);
   });
@@ -19,6 +20,7 @@ const ProtectedRouter = ({ children }: { children: ReactNode }) => {
   if (context.state.user != null) {
     return <>{children}</>;
   }
+
   return (
     <>
       <div className="w-full h-screen flex flex-col items-center justify-center">

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Lexend } from "next/font/google";
 import "./globals.css";
+import FirebaseAuthContext from "@/context/FirebaseAuthContext";
 
 const lexend = Lexend({ subsets: ["latin"] });
 
@@ -14,5 +15,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <section className={lexend.className}>{children}</section>;
+  return (
+    <FirebaseAuthContext>
+      <section className={lexend.className}>{children}</section>;
+    </FirebaseAuthContext>
+  );
 }

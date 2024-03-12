@@ -4,8 +4,7 @@ import PasswordInput from "@/components/layout/inputs/PasswordInput";
 import TextInput from "@/components/layout/inputs/TextInput";
 import { UserContext } from "@/context/FirebaseAuthContext";
 import { auth } from "@/firebase/firebase";
-import { error } from "console";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -26,20 +25,16 @@ const LoginForm = () => {
         type: "USER_REQUEST",
       });
       signInWithEmailAndPassword(auth, data.email, data.password)
-        .then(() => {
-          context.dispatch({
-            type: "LOGIN",
-          });
-        })
+        .then(() => router.push("/application"))
         .then(() => {
           setLoginError(false);
-        })
-        .then(() => {
-          router.push("/application");
         })
         .catch((error) => {
           console.error(error);
           setLoginError(true);
+          context.dispatch({
+            type: "REGISTER_FAIL",
+          });
         });
     });
   });

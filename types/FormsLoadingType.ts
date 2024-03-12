@@ -1,6 +1,6 @@
 import { User } from "firebase/auth";
 
-export type UserType = {
+export type FormsLoadingType = {
   user: User | null;
   isInitiallyLoading: boolean;
   isLoading: boolean;

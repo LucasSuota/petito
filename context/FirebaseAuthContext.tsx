@@ -2,12 +2,18 @@
 
 import { auth } from "@/firebase/firebase";
 import { firebaseReducer, initialValue } from "@/reducer/firebaseReducer";
-import { UserType } from "@/types/UserType";
-import { onAuthStateChanged } from "firebase/auth";
-import { ReactNode, createContext, useEffect, useReducer } from "react";
+import { FormsLoadingType } from "@/types/FormsLoadingType";
+import { User, onAuthStateChanged } from "firebase/auth";
+import {
+  ReactNode,
+  createContext,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
 
 export const UserContext = createContext<{
-  state: UserType;
+  state: FormsLoadingType;
   dispatch: React.Dispatch<any>;
 }>({
   state: {
@@ -23,7 +29,17 @@ const FirebaseAuthContext = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(firebaseReducer, initialValue);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {});
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        dispatch({
+          type: "SET_USER",
+          payload: {
+            user: user,
+          },
+        });
+      }
+    });
+
     return unsubscribe;
   }, []);
 

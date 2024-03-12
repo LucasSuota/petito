@@ -1,5 +1,5 @@
 import { DispatchType } from "@/types/DispatchType";
-import { UserType } from "@/types/UserType";
+import { FormsLoadingType } from "@/types/FormsLoadingType";
 
 export const initialValue = {
   user: null,
@@ -8,7 +8,10 @@ export const initialValue = {
   isRegistered: false,
 };
 
-export const firebaseReducer = (state: UserType, action: DispatchType) => {
+export const firebaseReducer = (
+  state: FormsLoadingType,
+  action: DispatchType
+) => {
   switch (action.type) {
     case "USER_REQUEST": {
       return {
@@ -19,6 +22,7 @@ export const firebaseReducer = (state: UserType, action: DispatchType) => {
     case "REGISTER_SUCCESS": {
       return {
         ...state,
+
         state: ((state.isLoading = false), (state.isRegistered = true)),
       };
     }
@@ -27,6 +31,16 @@ export const firebaseReducer = (state: UserType, action: DispatchType) => {
       return {
         ...state,
         state: ((state.isLoading = false), (state.isRegistered = false)),
+      };
+    }
+
+    case "SET_USER": {
+      return {
+        ...state,
+        state:
+          ((state.user = action.payload.user),
+          (state.isLoading = false),
+          (state.isInitiallyLoading = false)),
       };
     }
 
