@@ -4,7 +4,7 @@ import { PageState } from "@/types/PageState";
 export enum PageNavigationSelector {
   DISPLAY_ANIMAL = "SET_PAGE0",
   ADD_ANIMAL = "SET_PAGE1",
-  USER_INFO = "SET_PAGE3",
+  USER_INFO = "SET_PAGE2",
 }
 
 export const initialNavigationValue = {
