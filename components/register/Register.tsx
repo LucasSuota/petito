@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import RegisterForm from "../RegisterForm";
 import PopUpMessage from "../layout/popUp/PopUpMessage";
+import Link from "next/link";
 
 const Register = () => {
   return (
@@ -19,6 +20,9 @@ const Register = () => {
             <h3 className="text-lg">Seu bichinho está esperando.</h3>
           </div>
           <RegisterForm />
+          <Link href={"/login"}>
+            <p className="text-sm text-primaryblue mt-2">Já tenho uma conta</p>
+          </Link>
         </div>
       </main>
     </>

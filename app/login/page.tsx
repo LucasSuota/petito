@@ -1,6 +1,7 @@
 import LoginForm from "@/components/LoginForm";
 import FirebaseAuthContext from "@/context/FirebaseAuthContext";
 import PagesTransition from "@/transition/PagesTransition";
+import Link from "next/link";
 
 const Home = () => {
   return (
@@ -17,6 +18,9 @@ const Home = () => {
               <h3 className="text-lg">Seu bichinho está esperando.</h3>
             </div>
             <LoginForm />
+            <Link href={"/register"}>
+              <p className="text-sm text-primaryblue mt-2">Criar conta</p>
+            </Link>
           </div>
         </main>
       </PagesTransition>

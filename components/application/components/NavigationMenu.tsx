@@ -23,10 +23,10 @@ const NavigationMenu = () => {
               <item.icon
                 className={`${
                   navigationContext.state.page === item.page
-                    ? "text-primaryblue"
+                    ? "text-primaryblue "
                     : "text-primaryblack"
                 } active:text-primarypurple cursor-pointer`}
-                style={{ fontSize: "1.8rem" }}
+                style={{ fontSize: "2.0rem" }}
               />
             }
           </div>
