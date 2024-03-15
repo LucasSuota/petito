@@ -5,6 +5,7 @@ import {
   User,
   getAuth,
   onAuthStateChanged,
+  signOut,
   updateProfile,
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
@@ -24,7 +25,7 @@ const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_APIKEY,
   authDomain: process.env.NEXT_PUBLIC_AUTHDOMAIN,
   projectId: process.env.NEXT_PUBLIC_PROJECTID,
-  storageBucket: process.env.NEXT_PUBLIC_STORAGEBUCKER,
+  storageBucket: process.env.NEXT_PUBLIC_STORAGEBUCKET,
   messagingSenderId: process.env.NEXT_PUBLIC_MESSAGINGSENDERID,
   appId: process.env.NEXT_PUBLIC_APPID,
   measurementId: process.env.NEXT_PUBLIC_MEASUREMENTID,
@@ -35,7 +36,7 @@ export const app = initializeApp(firebaseConfig);
 if (typeof window !== "undefined") getAnalytics(app);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-export const storage = getStorage(app, "petito-2e3ee.appspot.com");
+export const storage = getStorage(app);
 
 export const getUser = async () => {
   const user = onAuthStateChanged(auth, (user) => {
@@ -50,7 +51,7 @@ export const getCurrentUser = () => {
   }
 };
 
-const userPhotoUpdate = async (fileRef: StorageReference) => {
+export const userPhotoUpdate = async (fileRef: StorageReference) => {
   const url = await getDownloadURL(fileRef);
   await updateProfile(getCurrentUser() as User, {
     photoURL: url,
@@ -68,4 +69,8 @@ export const handlePhotoUpload = async (file: File, user: User) => {
   } catch (error) {
     console.error(error);
   }
+};
+
+export const userSignOut = () => {
+  signOut(auth);
 };

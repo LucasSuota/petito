@@ -1,18 +1,8 @@
 "use client";
 
 import { UserContext } from "@/context/FirebaseAuthContext";
-import {
-  getCurrentUser,
-  handlePhotoUpload,
-  storage,
-} from "@/firebase/firebase";
-import { User, updateProfile } from "firebase/auth";
-import {
-  StorageReference,
-  getDownloadURL,
-  ref,
-  uploadBytes,
-} from "firebase/storage";
+import { getCurrentUser, handlePhotoUpload } from "@/firebase/firebase";
+import { User } from "firebase/auth";
 import Image from "next/image";
 import React, { useContext, useState } from "react";
 
@@ -48,28 +38,28 @@ const UserProfilePhoto = () => {
   return (
     <>
       <label htmlFor="fileInput" className="cursor-pointer">
-        {userContext.state.user?.photoURL ? (
-          <div className="w-[100px] h-[100px] relative">
+        {photoFileUrl ? (
+          <div className="sm:w-[250px] sm:h-[250px] w-[180px] h-[180px] relative">
             <Image
               className="rounded-full object-cover"
-              src={userContext.state.user?.photoURL}
+              src={photoFileUrl}
               fill
               alt="user profile picture preview"
             />
           </div>
         ) : (
           <>
-            {photoFileUrl ? (
-              <div className="w-[100px] h-[100px] relative">
+            {userContext.state.user?.photoURL ? (
+              <div className="sm:w-[250px] sm:h-[250px] w-[180px] h-[180px] relative">
                 <Image
                   className="rounded-full object-cover"
-                  src={photoFileUrl}
+                  src={userContext.state.user?.photoURL}
                   fill
                   alt="user profile picture preview"
                 />
               </div>
             ) : (
-              <div className="w-[100px] h-[100px] rounded-full bg-primaryblue"></div>
+              <div className="sm:w-[250px] sm:h-[250px] w-[180px] h-[180px] rounded-full bg-primaryblue" />
             )}
           </>
         )}
@@ -81,7 +71,14 @@ const UserProfilePhoto = () => {
         accept="image/*"
         onChange={handlePhotoFileChange}
       />
-      <button onClick={() => handleButtonClick()}>enviar</button>
+      {photoFileUrl && (
+        <button
+          className="text-primaryblue active:text-primarypurple"
+          onClick={() => handleButtonClick()}
+        >
+          enviar
+        </button>
+      )}
     </>
   );
 };

@@ -13,7 +13,7 @@ const config: Config = {
         primaryblue: "#555DF2",
         primarypurple: "#8055F2",
         primarycream: "#f2f2ff",
-        primaryblack: "#22222f",
+        primaryblack: "#111111",
       },
       backgroundImage: {
         "login-background": 'url("/images/login-background.jpg")',
