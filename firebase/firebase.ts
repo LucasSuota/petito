@@ -1,8 +1,20 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import {
+  User,
+  getAuth,
+  onAuthStateChanged,
+  updateProfile,
+} from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import {
+  StorageReference,
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytes,
+} from "firebase/storage";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -23,9 +35,37 @@ export const app = initializeApp(firebaseConfig);
 if (typeof window !== "undefined") getAnalytics(app);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+export const storage = getStorage(app, "petito-2e3ee.appspot.com");
 
 export const getUser = async () => {
   const user = onAuthStateChanged(auth, (user) => {
     return user;
   });
+};
+
+export const getCurrentUser = () => {
+  if (auth.currentUser) {
+    const user = auth.currentUser;
+    return user;
+  }
+};
+
+const userPhotoUpdate = async (fileRef: StorageReference) => {
+  const url = await getDownloadURL(fileRef);
+  await updateProfile(getCurrentUser() as User, {
+    photoURL: url,
+  });
+};
+
+export const handlePhotoUpload = async (file: File, user: User) => {
+  try {
+    const imageRef = ref(
+      storage,
+      "user/" + user.uid + "/profilePicture" + ".png"
+    );
+    await uploadBytes(imageRef, file);
+    const url = userPhotoUpdate(imageRef);
+  } catch (error) {
+    console.error(error);
+  }
 };
