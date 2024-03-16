@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import RegisterForm from "../RegisterForm";
 import PopUpMessage from "../layout/popUp/PopUpMessage";
 import Link from "next/link";
+import RegisterForm from "./components/RegisterForm/RegisterForm";
 
 const Register = () => {
   return (

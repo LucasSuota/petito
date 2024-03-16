@@ -1,3 +1,4 @@
+import Hero from "@/components/Hero";
 import Header from "@/components/application/components/home/Header";
 import FirebaseAuthContext from "@/context/FirebaseAuthContext";
 import PagesTransition from "@/transition/PagesTransition";
@@ -8,6 +9,7 @@ const Home = () => {
     <FirebaseAuthContext>
       <PagesTransition>
         <Header />
+        <Hero />
       </PagesTransition>
     </FirebaseAuthContext>
   );
