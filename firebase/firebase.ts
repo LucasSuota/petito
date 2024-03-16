@@ -15,6 +15,7 @@ import {
   getStorage,
   ref,
   uploadBytes,
+  uploadBytesResumable,
 } from "firebase/storage";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -58,14 +59,22 @@ export const userPhotoUpdate = async (fileRef: StorageReference) => {
   });
 };
 
-export const handlePhotoUpload = async (file: File, user: User) => {
+export const handlePhotoUpload = async (
+  file: File,
+  user: User,
+  progressCallback: (progress: number) => void
+) => {
   try {
     const imageRef = ref(
       storage,
       "user/" + user.uid + "/profilePicture" + ".png"
     );
-    await uploadBytes(imageRef, file);
-    const url = userPhotoUpdate(imageRef);
+    const uploadTask = uploadBytesResumable(imageRef, file);
+    uploadTask.on("state_changed", (snapshot) => {
+      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      progressCallback(parseInt(progress.toFixed(0)));
+    });
+    userPhotoUpdate(imageRef);
   } catch (error) {
     console.error(error);
   }

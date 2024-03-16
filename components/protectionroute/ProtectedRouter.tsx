@@ -11,10 +11,9 @@ const ProtectedRouter = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (auth.currentUser == null) router.push("/login");
-      clearInterval(interval);
-    }, 2000);
+    if (auth.currentUser == null) {
+      router.push("/login");
+    }
   });
 
   if (context.state.user != null) {
