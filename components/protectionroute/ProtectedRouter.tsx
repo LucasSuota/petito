@@ -11,7 +11,7 @@ const ProtectedRouter = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
 
   useEffect(() => {
-    if (auth.currentUser == null) {
+    if (auth.currentUser == null || auth.currentUser.emailVerified == false) {
       router.push("/login");
     }
   });

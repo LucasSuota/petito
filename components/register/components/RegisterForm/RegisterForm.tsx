@@ -5,7 +5,11 @@ import TextInput from "@/components/layout/inputs/TextInput";
 import { restartTimeline } from "@/components/layout/popUp/PopUpMessage";
 import { UserContext } from "@/context/FirebaseAuthContext";
 import { auth } from "@/firebase/firebase";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  updateProfile,
+} from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
@@ -33,6 +37,11 @@ const RegisterForm = () => {
             updateProfile(auth.currentUser, {
               displayName: `${data.firstName}`,
             });
+          }
+        })
+        .then(() => {
+          if (auth.currentUser) {
+            sendEmailVerification(auth.currentUser);
           }
         })
         .then(() => {

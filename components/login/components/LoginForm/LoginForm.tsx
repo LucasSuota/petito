@@ -4,7 +4,11 @@ import PasswordInput from "@/components/layout/inputs/PasswordInput";
 import TextInput from "@/components/layout/inputs/TextInput";
 import { UserContext } from "@/context/FirebaseAuthContext";
 import { auth } from "@/firebase/firebase";
-import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import {
+  sendEmailVerification,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -12,6 +16,8 @@ import { useForm } from "react-hook-form";
 const LoginForm = () => {
   const context = useContext(UserContext);
   const [loginError, setLoginError] = useState<boolean>(false);
+  const [emailVerificationMessage, setEmailVerificationMessage] =
+    useState<boolean>(false);
   const router = useRouter();
 
   const {
@@ -25,7 +31,15 @@ const LoginForm = () => {
         type: "USER_REQUEST",
       });
       signInWithEmailAndPassword(auth, data.email, data.password)
-        .then(() => router.push("/application"))
+        .then(() => {
+          if (auth.currentUser?.emailVerified === false) {
+            sendEmailVerification(auth.currentUser);
+            setEmailVerificationMessage(true);
+          } else {
+            router.push("/application");
+          }
+        })
+
         .then(() => {
           setLoginError(false);
         })
@@ -58,6 +72,9 @@ const LoginForm = () => {
         error={!!errors.password}
         helperText={errors.password ? "Senha é necessária" : ""}
       />
+      {emailVerificationMessage && (
+        <p className="text-blueprimary text-sm">Confirme seu email</p>
+      )}
       {loginError && (
         <p className="text-red-500 text-sm">Email ou senha incorreto</p>
       )}
