@@ -6,11 +6,11 @@ import gsap from "gsap";
 import { useContext } from "react";
 
 const animationTimeline = gsap.timeline({ paused: true });
-export const restartTimeline = () => {
+export const playSuccessPopUp = () => {
   animationTimeline.restart();
 };
 
-const PopUpMessage = () => {
+const PopUpSuccessMessage = () => {
   const context = useContext(UserContext);
 
   useGSAP(() => {
@@ -33,17 +33,11 @@ const PopUpMessage = () => {
 
   return (
     <>
-      {context.state.isRegistered ? (
-        <div className="popup absolute left-2/4 translate-x-[-50%] w-[90%] sm:w-2/4 mt-4 bg-green-500 p-4 text-center rounded-sm shadow-xl">
-          <p className="text-white">Sucesso ao criar conta</p>
-        </div>
-      ) : (
-        <div className="popup absolute left-2/4 translate-x-[-50%] w-[90%] sm:w-2/4 mt-4 bg-red-500 p-4 text-center rounded-sm shadow-xl">
-          <p className="text-white">Erro ao criar conta</p>
-        </div>
-      )}
+      <div className="popup absolute left-2/4 translate-x-[-50%] w-[90%] sm:w-2/4 mt-4 bg-green-500 p-4 text-center rounded-sm shadow-xl">
+        <p className="text-white">Sucesso</p>
+      </div>
     </>
   );
 };
 
-export default PopUpMessage;
+export default PopUpSuccessMessage;

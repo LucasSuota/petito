@@ -1,8 +1,9 @@
 "use client";
 
+import { Input } from "@/components/ui/input";
 import PasswordInput from "@/components/layout/inputs/PasswordInput";
 import TextInput from "@/components/layout/inputs/TextInput";
-import { restartTimeline } from "@/components/layout/popUp/PopUpMessage";
+import { restartTimeline } from "@/components/layout/popUp/PopUpErrorMessage";
 import { UserContext } from "@/context/FirebaseAuthContext";
 import { auth } from "@/firebase/firebase";
 import {
@@ -13,9 +14,10 @@ import {
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
+import { LoadContext } from "@/context/LoadingContext";
 
 const RegisterForm = () => {
-  const context = useContext(UserContext);
+  const loadingContext = useContext(LoadContext);
   const router = useRouter();
 
   const {
@@ -25,33 +27,19 @@ const RegisterForm = () => {
   } = useForm<FormData>();
   const onSubmit = handleSubmit((data) => {
     new Promise<void>(() => {
-      context.dispatch({ type: "USER_REQUEST" });
+      loadingContext.dispatch({ type: "LOADING" });
       createUserWithEmailAndPassword(auth, data.email, data.password)
-        .then(() => {
-          context.dispatch({
-            type: "REGISTER_SUCCESS",
-          });
-        })
-        .then(() => {
-          if (auth.currentUser) {
-            updateProfile(auth.currentUser, {
-              displayName: `${data.firstName}`,
-            });
-          }
-        })
         .then(() => {
           if (auth.currentUser) {
             sendEmailVerification(auth.currentUser);
           }
         })
         .then(() => {
+          loadingContext.dispatch({ type: "NOT_LOADING" });
           router.push("/login");
         })
         .catch((error) => {
-          context.dispatch({
-            type: "REGISTER_FAIL",
-            payload: { error },
-          });
+          loadingContext.dispatch({ type: "NOT_LOADING" });
           restartTimeline();
         });
     });
@@ -60,42 +48,32 @@ const RegisterForm = () => {
   return (
     <>
       <form className="sm:w-[80%] flex flex-col gap-2" onSubmit={onSubmit}>
-        <TextInput
-          name="firstName"
-          label="Nome"
-          register={register}
-          registerName="firstName"
-          error={!!errors.firstName}
-          helperText={errors.firstName ? "Nome é necessário" : ""}
+        <Input
+          type="text"
+          {...register("firstName", { required: true })}
+          placeholder="Nome"
+          className="h-[50px]"
         />
-        <TextInput
-          name="lastName"
-          label="Sobrenome"
-          registerName="lastName"
-          register={register}
-          error={!!errors.lastName}
-          helperText={errors.lastName ? "Sobrenome é necessário" : ""}
+        <Input
+          type="text"
+          {...register("lastName", { required: true })}
+          placeholder="Sobrenome"
+          className="h-[50px]"
         />
-        <TextInput
-          name="email"
-          label="Email"
-          register={register}
-          type="email"
-          registerName="email"
-          error={!!errors.email}
-          helperText={errors.email ? "Insira um email valido" : ""}
+        <Input
+          type="text"
+          {...register("email", { required: true })}
+          placeholder="Email"
+          className="h-[50px]"
         />
-        <PasswordInput
-          name="password"
-          label="Senha"
-          register={register}
-          registerName="password"
-          error={!!errors.password}
-          helperText={
-            errors.password ? "Senha é necessária e deve conter 8 digitos" : ""
-          }
+        <Input
+          {...register("password", { required: true })}
+          placeholder="Senha"
+          className="h-[50px]"
+          type="password"
         />
-        {context.state.isLoading ? (
+
+        {loadingContext.state.isLoading ? (
           <button
             type="submit"
             disabled={true}

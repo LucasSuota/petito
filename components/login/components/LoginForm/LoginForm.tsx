@@ -1,88 +1,59 @@
 "use client";
 
-import PasswordInput from "@/components/layout/inputs/PasswordInput";
-import TextInput from "@/components/layout/inputs/TextInput";
-import { UserContext } from "@/context/FirebaseAuthContext";
+import { restartTimeline } from "@/components/layout/popUp/PopUpErrorMessage";
+import { Input } from "@/components/ui/input";
+import { LoadContext } from "@/context/LoadingContext";
 import { auth } from "@/firebase/firebase";
 import {
   sendEmailVerification,
   signInWithEmailAndPassword,
-  signOut,
 } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
 
 const LoginForm = () => {
-  const context = useContext(UserContext);
-  const [loginError, setLoginError] = useState<boolean>(false);
-  const [emailVerificationMessage, setEmailVerificationMessage] =
-    useState<boolean>(false);
+  const loadingContext = useContext(LoadContext);
   const router = useRouter();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>();
+  const { register, handleSubmit } = useForm<FormData>();
   const onSubmit = handleSubmit((data) => {
     new Promise<void>(() => {
-      context.dispatch({
-        type: "USER_REQUEST",
-      });
+      loadingContext.dispatch({ type: "LOADING" });
       signInWithEmailAndPassword(auth, data.email, data.password)
         .then(() => {
           if (auth.currentUser?.emailVerified === false) {
             sendEmailVerification(auth.currentUser);
-            setEmailVerificationMessage(true);
           } else {
             router.push("/application");
           }
         })
-
-        .then(() => {
-          setLoginError(false);
-        })
-        .catch((error) => {
-          console.error(error);
-          setLoginError(true);
-          context.dispatch({
-            type: "REGISTER_FAIL",
-          });
+        .then(() => loadingContext.dispatch({ type: "NOT_LOADING" }))
+        .catch(() => {
+          loadingContext.dispatch({ type: "NOT_LOADING" });
+          restartTimeline();
         });
     });
   });
 
   return (
-    <form className="sm:w-[80%] flex flex-col gap-2" onSubmit={onSubmit}>
-      <TextInput
-        name="email"
-        label="Email"
-        register={register}
-        type="email"
-        registerName="email"
-        error={!!errors.email}
-        helperText={errors.email ? "Insira um email valido" : ""}
+    <form className="w-[80%] flex flex-col gap-2" onSubmit={onSubmit}>
+      <Input
+        placeholder="Email"
+        className="h-[50px] w-full"
+        {...register("email", { required: true })}
       />
-      <PasswordInput
-        name="password"
-        label="Password"
-        register={register}
-        registerName="password"
-        error={!!errors.password}
-        helperText={errors.password ? "Senha é necessária" : ""}
+      <Input
+        placeholder="Senha"
+        className="h-[50px] w-full"
+        {...register("password", { required: true })}
+        type="password"
       />
-      {emailVerificationMessage && (
-        <p className="text-blueprimary text-sm">Confirme seu email</p>
-      )}
-      {loginError && (
-        <p className="text-red-500 text-sm">Email ou senha incorreto</p>
-      )}
-      {context.state.isLoading ? (
+      {loadingContext.state.isLoading ? (
         <button
           type="submit"
           disabled={true}
-          className="bg-primaryblue hover:bg-primarypurple active:bg-primaryblack disabled:bg-blue-200 text-white rounded-sm px-2 py-4 transition-all"
+          className="bg-primaryblue hover:bg-primary active:bg-primaryblack disabled:bg-blue-200 text-white rounded-sm px-2 py-4 transition-all"
         >
           Entrando...
         </button>
@@ -90,7 +61,7 @@ const LoginForm = () => {
         <button
           type="submit"
           disabled={false}
-          className="bg-primaryblue hover:bg-primarypurple active:bg-primaryblack disabled:bg-blue-200 text-white rounded-sm px-2 py-4 transition-all"
+          className="bg-primaryblue hover:bg-primary active:bg-primaryblack disabled:bg-blue-200 text-white rounded-sm px-2 py-4 transition-all"
         >
           Entrar
         </button>

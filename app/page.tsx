@@ -1,4 +1,4 @@
-import Hero from "@/components/Hero";
+import Hero from "@/components/layout/Hero";
 import Header from "@/components/application/components/home/Header";
 import FirebaseAuthContext from "@/context/FirebaseAuthContext";
 import PagesTransition from "@/transition/PagesTransition";
