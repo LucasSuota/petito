@@ -11,17 +11,15 @@ import { Input } from "@/components/ui/input";
 const AddAnimalForm = () => {
   const userContext = useContext(UserContext);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<AddAnimalFormType>();
+  const { register, handleSubmit } = useForm<AddAnimalFormType>();
 
   const handleFormSubmit = async (data: AddAnimalFormType) => {
     await setDoc(doc(db, `${userContext.state.user?.uid!}`, `${data.name}`), {
       name: data.name,
       age: data.age,
       bio: data.bio,
+    }).then(() => {
+      alert("adicionou");
     });
   };
 
