@@ -3,40 +3,15 @@
 import { playSuccessPopUp } from "@/components/layout/popUp/PopUpSucessMessage";
 import { UserContext } from "@/context/FirebaseAuthContext";
 import { getCurrentUser, handlePhotoUpload } from "@/firebase/firebase";
-import {
-  initialUserPhotoReducer,
-  userPhotoReducer,
-} from "@/reducer/userPhotoReducer";
+import usePhoto from "@/hooks/usePhoto";
 import { User } from "firebase/auth";
 import Image from "next/image";
-import React, { useContext, useEffect, useReducer, useState } from "react";
+import React, { useContext, useState } from "react";
 
 const UserProfilePhoto = () => {
   const userContext = useContext(UserContext);
-  const [state, dispatch] = useReducer(
-    userPhotoReducer,
-    initialUserPhotoReducer
-  );
   const [load, setLoad] = useState<number>(0);
-
-  const handlePhotoFileChange = (e: React.ChangeEvent) => {
-    try {
-      const target = e.target as HTMLInputElement;
-      const files = target.files as FileList;
-      if (files) {
-        dispatch({
-          type: "SET_PHOTO_FILE",
-          payload: {
-            photoFile: files[0],
-            photoFileUrl: URL.createObjectURL(files[0]),
-            userPhoto: null,
-          },
-        });
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  const { photoFile, photoFileUrl, handleFileChange } = usePhoto();
 
   const progressCallback = (n: number) => {
     setLoad(n);
@@ -48,44 +23,33 @@ const UserProfilePhoto = () => {
   const handleButtonClick = () => {
     try {
       const user = getCurrentUser();
-      if (state.photoFile) {
-        handlePhotoUpload(state.photoFile, user as User, progressCallback);
+      if (photoFile) {
+        handlePhotoUpload(photoFile, user as User, progressCallback);
       }
     } catch (err) {
       console.error(err);
     }
   };
 
-  useEffect(() => {
-    dispatch({
-      type: "SET_USER_PHOTO",
-      payload: {
-        photoFile: null,
-        photoFileUrl: null,
-        userPhoto: userContext.state.user?.photoURL!,
-      },
-    });
-  }, [userContext.state.user?.photoURL]);
-
   return (
     <>
       <label htmlFor="fileInput" className="cursor-pointer">
-        {state.photoFileUrl ? (
+        {photoFileUrl ? (
           <div className="sm:w-[250px] sm:h-[250px] w-[180px] h-[180px] relative animate-pulse">
             <Image
               className="rounded-full object-cover"
-              src={state.photoFileUrl}
+              src={photoFileUrl}
               fill
               alt="user profile picture preview"
             />
           </div>
         ) : (
           <>
-            {state.userPhoto ? (
+            {userContext.state.user?.photoURL ? (
               <div className="sm:w-[250px] sm:h-[250px] w-[180px] h-[180px] relative">
                 <Image
                   className="rounded-full object-cover"
-                  src={state.userPhoto}
+                  src={userContext.state.user?.photoURL}
                   fill
                   alt="user profile picture preview"
                 />
@@ -101,10 +65,10 @@ const UserProfilePhoto = () => {
         id="fileInput"
         className="hidden"
         accept="image/*"
-        onChange={handlePhotoFileChange}
+        onChange={handleFileChange}
       />
 
-      {state.photoFileUrl &&
+      {photoFileUrl &&
         (load != 0 && load != 100 ? (
           <button
             className="text-primaryblue active:text-primarypurple disabled:text-slate-300"

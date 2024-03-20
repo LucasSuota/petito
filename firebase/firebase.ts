@@ -8,13 +8,12 @@ import {
   signOut,
   updateProfile,
 } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { doc, getFirestore, updateDoc } from "firebase/firestore";
 import {
   StorageReference,
   getDownloadURL,
   getStorage,
   ref,
-  uploadBytes,
   uploadBytesResumable,
 } from "firebase/storage";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -75,6 +74,27 @@ export const handlePhotoUpload = async (
       progressCallback(parseInt(progress.toFixed(0)));
     });
     userPhotoUpdate(imageRef);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const handleAnimalPhotoUpload = async (
+  file: File,
+  animalName: string,
+  user: User,
+  progressCallback: (progress: number) => void
+) => {
+  try {
+    const imageRef = ref(
+      storage,
+      "user/" + `${user.uid}/` + `${animalName}/` + `${animalName}.png`
+    );
+    const uploadTask = uploadBytesResumable(imageRef, file);
+    uploadTask.on("state_changed", (snapshot) => {
+      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      progressCallback(parseInt(progress.toFixed(0)));
+    });
   } catch (error) {
     console.error(error);
   }

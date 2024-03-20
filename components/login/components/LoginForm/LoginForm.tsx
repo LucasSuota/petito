@@ -37,15 +37,18 @@ const LoginForm = () => {
   });
 
   return (
-    <form className="w-[80%] flex flex-col gap-2" onSubmit={onSubmit}>
+    <form
+      className="sm:w-[80%] w-[100%] flex flex-col gap-2"
+      onSubmit={onSubmit}
+    >
       <Input
         placeholder="Email"
-        className="h-[50px] w-full"
+        className="h-[50px] w-full text-md"
         {...register("email", { required: true })}
       />
       <Input
         placeholder="Senha"
-        className="h-[50px] w-full"
+        className="h-[50px] w-full text-md"
         {...register("password", { required: true })}
         type="password"
       />
@@ -53,7 +56,7 @@ const LoginForm = () => {
         <button
           type="submit"
           disabled={true}
-          className="bg-primaryblue hover:bg-primary active:bg-primaryblack disabled:bg-blue-200 text-white rounded-sm px-2 py-4 transition-all"
+          className="bg-primaryblue hover:bg-secondaryblue active:bg-black disabled:bg-blue-200 text-white rounded-sm px-2 py-4 transition-all text-lg"
         >
           Entrando...
         </button>
@@ -61,7 +64,7 @@ const LoginForm = () => {
         <button
           type="submit"
           disabled={false}
-          className="bg-primaryblue hover:bg-primary active:bg-primaryblack disabled:bg-blue-200 text-white rounded-sm px-2 py-4 transition-all"
+          className="bg-primaryblue hover:bg-secondaryblue active:bg-black disabled:bg-blue-200 text-white rounded-sm px-2 py-4 transition-all text-lg"
         >
           Entrar
         </button>
