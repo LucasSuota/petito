@@ -1,7 +1,6 @@
 import React from "react";
 import LoginForm from "./components/LoginForm/LoginForm";
 import Link from "next/link";
-import PopUpMessage from "../layout/popUp/PopUpErrorMessage";
 import PopUpErrorMessage from "../layout/popUp/PopUpErrorMessage";
 
 const Login = () => {

@@ -79,27 +79,6 @@ export const handlePhotoUpload = async (
   }
 };
 
-export const handleAnimalPhotoUpload = async (
-  file: File,
-  animalName: string,
-  user: User,
-  progressCallback: (progress: number) => void
-) => {
-  try {
-    const imageRef = ref(
-      storage,
-      "user/" + `${user.uid}/` + `${animalName}/` + `${animalName}.png`
-    );
-    const uploadTask = uploadBytesResumable(imageRef, file);
-    uploadTask.on("state_changed", (snapshot) => {
-      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-      progressCallback(parseInt(progress.toFixed(0)));
-    });
-  } catch (error) {
-    console.error(error);
-  }
-};
-
 export const userSignOut = () => {
   signOut(auth);
 };

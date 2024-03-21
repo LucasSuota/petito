@@ -1,86 +1,119 @@
 "use client";
 
-import {
-  db,
-  getCurrentUser,
-  handleAnimalPhotoUpload,
-} from "@/firebase/firebase";
+import { db, storage } from "@/firebase/firebase";
+import { Input } from "@/components/ui/input";
 import { AddAnimalFormType } from "@/types/AddAnimalFormType";
-import { doc, setDoc } from "firebase/firestore";
-import React, { useContext, useReducer, useState } from "react";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { UserContext } from "@/context/FirebaseAuthContext";
-import { Input } from "@/components/ui/input";
 import usePhoto from "@/hooks/usePhoto";
 import Image from "next/image";
-import { User } from "firebase/auth";
-import { playSuccessPopUp } from "@/components/layout/popUp/PopUpSucessMessage";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { doc, setDoc } from "firebase/firestore";
+import { restartTimeline } from "@/components/layout/popUp/PopUpErrorMessage";
 
 const AddAnimalForm = () => {
   const userContext = useContext(UserContext);
-  const [load, setLoad] = useState<number>(0);
   const { register, handleSubmit } = useForm<AddAnimalFormType>();
   const { photoFile, photoFileUrl, handleFileChange } = usePhoto();
+  const [firebasePhotoUrl, setFirebasePhotoUrl] = useState<null | string>(null);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
 
-  const progressCallback = (n: number) => {
-    setLoad(n);
+  const setDownloadUrl = (url: string) => {
+    setFirebasePhotoUrl(url);
+  };
+
+  const handleAnimalPhotoProgress = (n: number) => {
     if (n === 100) {
-      playSuccessPopUp();
+      setUploadProgress(100);
     }
   };
 
-  const handleFormSubmit = async (data: AddAnimalFormType) => {
-    const user = getCurrentUser();
-
+  const handleUploadAnimalPhoto = async ({ name }: AddAnimalFormType) => {
+    const animalRef = ref(
+      storage,
+      `user/${userContext.state.user?.uid}/${name}/${name}.png`
+    );
     if (photoFile) {
-      await handleAnimalPhotoUpload(
-        photoFile,
-        data.name,
-        user as User,
-        progressCallback
+      const uploadTask = uploadBytesResumable(animalRef, photoFile);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          if (progress === 100) {
+            handleAnimalPhotoProgress(parseInt(progress.toFixed(0)));
+          }
+        },
+        (error) => {
+          console.error(error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            setDownloadUrl(downloadURL);
+          });
+        }
       );
     }
+  };
 
-    await setDoc(doc(db, `${userContext.state.user?.uid!}`, `${data.name}`), {
-      name: data.name,
-      age: data.age,
-      bio: data.bio,
-    }).then(() => {
-      alert("adicionou");
-    });
+  const handleAnimalDataUpload = async ({
+    name,
+    species,
+  }: AddAnimalFormType) => {
+    const animalRef = doc(db, `${userContext.state.user?.uid}/${name}/`);
+    if (uploadProgress === 100) {
+      if (firebasePhotoUrl) {
+        await setDoc(animalRef, {
+          name,
+          species,
+          photo: firebasePhotoUrl,
+        });
+        alert("Sucesso ao cadastrar animal!");
+      }
+    }
+  };
+
+  const handleForm = async (data: AddAnimalFormType) => {
+    try {
+      await handleUploadAnimalPhoto(data);
+      await handleAnimalDataUpload(data);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
-    <form className="flex flex-col gap-2 sm:w-1/5 w-4/5">
+    <form className="flex flex-col gap-2 sm:w-2/5 w-4/5">
       <Input
         placeholder="Nome"
         className="h-[50px]"
         {...register("name", { required: true })}
       />
       <Input
-        placeholder="Idade"
+        placeholder="Espécie"
         className="h-[50px]"
-        {...register("age", { required: true })}
+        {...register("species", { required: true })}
       />
-      <Input
-        placeholder="Características"
-        className="h-[50px]"
-        {...register("bio", { required: true })}
-      />
-
       <label htmlFor="animalFile" className="cursor-pointer">
         {photoFileUrl ? (
-          <div className="w-full h-[250px] relative rounded-md">
+          <div className="w-full sm:h-[600px] h-[250px] relative relative bg-primaryblue rounded-md flex items-center justify-center">
             <Image
-              className="object-cover"
+              className="object-cover z-10 hover:opacity-60 transition-all rounded-md"
               src={photoFileUrl}
               fill
               alt="animal photo"
             />
           </div>
         ) : (
-          <div className="w-full h-[100px] bg-primaryblue rounded-md">
-            Imagem
+          <div className="w-full sm:h-[400px] h-[100px] relative bg-primaryblue rounded-md flex items-center justify-center">
+            <p className="z-40 text-white font-semibold">Adicionar foto</p>
+            <Image
+              className="object-cover opacity-45 z-10 hover:opacity-60 transition-all"
+              src={"/images/login-background.jpg"}
+              fill
+              alt="animal photo"
+            />
           </div>
         )}
       </label>
@@ -89,12 +122,12 @@ const AddAnimalForm = () => {
         id="animalFile"
         className="hidden"
         accept="image/*"
-        {...register("photo", { required: true })}
         onChange={handleFileChange}
+        required
       />
       <button
         type="submit"
-        onClick={handleSubmit(handleFormSubmit)}
+        onClick={handleSubmit(handleForm)}
         className="bg-primaryblue hover:bg-secondaryblue active:bg-black h-[50px] text-slate-200 rounded-md"
       >
         Registrar

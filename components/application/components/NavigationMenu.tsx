@@ -8,7 +8,7 @@ const NavigationMenu = () => {
   const navigationContext = useContext(NavigationMenuContext);
 
   return (
-    <section className="sm:w-[100px] sm:h-dvh w-full bg-primaryblack absolute bottom-0 p-4">
+    <section className="sm:w-[100px] sm:h-dvh w-full bg-slate-900 absolute bottom-0 p-3">
       <div className="flex sm:flex-col sm:h-full flex-row items-center justify-evenly">
         {navigationMenuItems.map((item) => (
           <div
@@ -24,7 +24,7 @@ const NavigationMenu = () => {
                 className={`${
                   navigationContext.state.page === item.page
                     ? "text-primaryblue"
-                    : "text-primarycream"
+                    : "text-white"
                 } cursor-pointer transition-all`}
                 style={{ fontSize: "2.0rem" }}
               />
