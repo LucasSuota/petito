@@ -10,7 +10,6 @@ import usePhoto from "@/hooks/usePhoto";
 import Image from "next/image";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
-import { restartTimeline } from "@/components/layout/popUp/PopUpErrorMessage";
 
 const AddAnimalForm = () => {
   const userContext = useContext(UserContext);
@@ -35,25 +34,28 @@ const AddAnimalForm = () => {
       `user/${userContext.state.user?.uid}/${name}/${name}.png`
     );
     if (photoFile) {
-      const uploadTask = uploadBytesResumable(animalRef, photoFile);
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          if (progress === 100) {
-            handleAnimalPhotoProgress(parseInt(progress.toFixed(0)));
-          }
-        },
-        (error) => {
-          console.error(error);
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+      try {
+        const uploadTask = uploadBytesResumable(animalRef, photoFile);
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            if (progress === 100) {
+              handleAnimalPhotoProgress(parseInt(progress.toFixed(0)));
+            }
+          },
+          (error) => {
+            console.error(error);
+          },
+          async () => {
+            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
             setDownloadUrl(downloadURL);
-          });
-        }
-      );
+          }
+        );
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
@@ -62,14 +64,16 @@ const AddAnimalForm = () => {
     species,
   }: AddAnimalFormType) => {
     const animalRef = doc(db, `${userContext.state.user?.uid}/${name}/`);
-    if (uploadProgress === 100) {
-      if (firebasePhotoUrl) {
+    if (uploadProgress === 100 && firebasePhotoUrl) {
+      try {
         await setDoc(animalRef, {
           name,
           species,
           photo: firebasePhotoUrl,
         });
         alert("Sucesso ao cadastrar animal!");
+      } catch (error) {
+        console.error(error);
       }
     }
   };
