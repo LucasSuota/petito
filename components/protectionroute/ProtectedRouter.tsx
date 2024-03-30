@@ -10,15 +10,15 @@ const ProtectedRouter = ({ children }: { children: ReactNode }) => {
   const context = useContext(UserContext);
   const router = useRouter();
 
-  useEffect(() => {
-    if (auth.currentUser == null || auth.currentUser.emailVerified == false) {
-      router.push("/login");
-    }
-  });
+  // useEffect(() => {
+  //   if (auth.currentUser == null || auth.currentUser.emailVerified == false) {
+  //     router.push("/login");
+  //   }
+  // });
 
-  if (context.state.user != null) {
-    return <>{children}</>;
-  }
+  // if (context.state.user != null) {
+  return <>{children}</>;
+  // }
 
   return (
     <>

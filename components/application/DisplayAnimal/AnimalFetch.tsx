@@ -24,17 +24,21 @@ const AnimalFetch = () => {
     <main className="w-full h-dvh text-sm flex flex-col items-center justify-center">
       {animals.map((animal) => (
         <div
-          className="my-4 w-2/4 bg-primaryblue p-4 flex flex-col items-center justify-center"
           key={animal.name}
+          className="w-full flex flex-row items-center justify-center bg-white shadow-md rounded-sm my-4"
         >
-          <h1>{animal.name}</h1>
-          <p>{animal.species}</p>
-          <Image
-            src={animal.photo}
-            width={100}
-            height={100}
-            alt={animal.name}
-          />
+          <div className="w-2/4 h-[250px] flex flex-col items-start p-4 justify-center">
+            <h2 className="text-md font-semibold">{animal.name}</h2>
+            <p>{animal.species}</p>
+          </div>
+          <div className="w-2/4 h-[250px] flex items-center justify-center relative">
+            <Image
+              src={animal.photo}
+              alt={animal.name}
+              fill
+              objectFit="cover"
+            />
+          </div>
         </div>
       ))}
     </main>
